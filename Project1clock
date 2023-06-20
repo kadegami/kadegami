@@ -1,0 +1,121 @@
+#include <iostream>
+#include <cstring> 
+#include <sstream>
+
+using namespace std; 
+/**
+ * Karina Washington
+ * May 21st 2023
+ * The purpose of this program is to code 2 different clocks . 
+ * Also, the program will add one to each a unit of time picked by user. 
+ * This program will use a menu bar to pick the unit of time such as hours, minutes or seconds. 
+ * Finally, this program makes sure the colcok stays in the correct time and prints times between each us of the menu. 
+*/
+
+// Global Variables 
+// you need to decide which variable will be needed in and out of the functions. 
+int hours = 0;
+int minutes = 0;
+int seconds = 0;
+
+
+void setTime() {
+    time_t ttime = time(0); // Declare ttime as argument for the localtime function
+    tm *local_time = localtime(&ttime); // holds the local time
+
+    // Assings hours, minutes, and seconds from the local_time varible
+    hours = local_time->tm_hour;
+    minutes = local_time->tm_min;
+    seconds = local_time->tm_sec; 
+
+}
+
+
+string format24() { // Function with hours, minutes and seconds
+    ostringstream ss;
+    ss << hours << ":" << minutes << ":" << seconds;
+
+    return ss.str();
+}
+
+string format12() { // Funcion about 12 hr clock 
+    int convertedHour = hours;
+    string period = "";
+    if (convertedHour > 12) {
+		convertedHour -= 12;
+		period = "P";
+	}
+	else {
+		period = "A";
+	}
+
+    ostringstream ss;
+    ss << convertedHour << ":" << minutes << ":" << seconds << " " << period << " " << "M";
+
+    return ss.str();
+}
+
+
+
+void printTime() { // Function about printing the format with *
+    cout << string(26, '*') <<  string(5, ' ') << string(26, '*') << endl;
+    cout << "*" << string(6, ' ') << "12 Hour Clock" << string(5, ' ') << "*" << string(5, ' ');
+    cout << "*" << string(6, ' ') << "24 Hour Clock" << string(5, ' ') << "*" << string(5, ' ') << endl;
+    cout << "*" << string(6, ' ') << format12() << string(7, ' ') << "*" << string(5, ' ');
+    cout << "*" << string(6, ' ') << format24() << string(10, ' ') << "*" << endl;
+    cout << string(26, '*') <<  string(5, ' ') << string(26, '*') << endl;
+}
+
+void addHour() { // it does not return anyting 
+    hours += 1;
+    if (hours > 24) {
+        hours = 0;
+    }
+} 
+
+int addMinute() { // Function about minutes 
+    minutes += 1;
+    if(minutes > 60) {
+        minutes = 0;
+        addHour();
+    }
+}
+
+int addSeconds() { // Funnction about seconds
+    seconds += 1;
+    if(seconds > 60) {
+        seconds = 0;
+        addMinute();
+    }
+}
+
+void menu () { // Function about MENU
+    cout << "*     1 - Add One Hour       *" << endl;
+    cout << "*     2 - Add One Minute     *" << endl;
+    cout << "*     3 - Add One Second     *" << endl;
+    cout << "*     4 - Exit Program       *" << endl;
+
+    int choice = 0;
+   
+    while(choice != 4) { // WHile loop to have options 
+        cin >> choice;
+        if(choice == 1) {
+            addHour();
+        } else if(choice == 2) {
+            addMinute();
+        } else if(choice == 3) {
+            addSeconds();
+        } else if(choice == 4) {
+            cout << "Goodbye" << endl;
+        } else {
+            cout << "Invalid option" << endl;
+        }
+        printTime();
+    }
+}
+
+int main(){
+    setTime();
+    menu();
+    return 0;
+}
